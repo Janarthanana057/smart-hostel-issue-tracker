@@ -1,19 +1,28 @@
+import os  # Added missing import for handling folders
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
-from datetime import datetime
+from werkzeug.utils import secure_filename # For file safety
+
 app = Flask(
     __name__,
     static_folder="static",
     template_folder="templates"
 )
 
+# 1. Configuration (MUST come before routes)
 app.secret_key = "hackoverflow_2026_key"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+
+# 2. Initialize Database
 db = SQLAlchemy(app)
-UPLOAD_FOLDER = 'static/uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# 3. Ensure upload folder exists
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+
 # MUST BE AT THE TOP
 class Circular(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -252,56 +261,49 @@ def admin_dashboard():
                            overdue=overdue_issues)
 
 
-import os
-from flask import request, render_template, redirect, url_for, session
-from werkzeug.utils import secure_filename
 
-# Ensure the upload folder exists
-UPLOAD_FOLDER = 'static/uploads'
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+import os
+from datetime import datetime  # Crucial for the timestamp
+from flask import Flask, render_template, request, redirect, url_for, session
+from werkzeug.utils import secure_filename # Crucial for saving files
+# Ensure this path is absolute for your Windows desktop
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 @app.route('/lost-found', methods=['GET', 'POST'])
 def lost_found():
+    # 1. ALWAYS check for login first!
     if 'user_id' not in session:
         return redirect(url_for('login'))
 
     if request.method == 'POST':
-        item_name = request.form.get('item_name')
-        location = request.form.get('location')
-        description = request.form.get('description')
-        status = request.form.get('status')
-        
-        # ✅ FIXED: Changed 'image' to 'item_image' to match your HTML name attribute
-        file = request.files.get('item_image') 
+        file = request.files.get('item_image')
         filename = None
         
         if file and file.filename != '':
+            # 2. Secure and timestamp the filename
             filename = secure_filename(file.filename)
-            # This saves the file to static/uploads/
-            file.save(os.path.join(UPLOAD_FOLDER, filename))
+            filename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{filename}"
+            
+            # 3. Save to the absolute path
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        # Create new record
+        # 4. Save to Database
         new_item = LostFound(
-            item_name=item_name,
-            location=location,
-            description=description,
-            status=status,
-            image_path=filename, # Saves only the filename string
+            item_name=request.form.get('item_name'),
+            description=request.form.get('description'),
+            location=request.form.get('location'),
+            status=request.form.get('status'),
+            image_path=filename,
             user_id=session['user_id']
         )
-        
-        try:
-            db.session.add(new_item)
-            db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            print(f"Error: {e}")
-            
+        db.session.add(new_item)
+        db.session.commit()
         return redirect(url_for('lost_found'))
 
-    # Fetch items for the right-side grid
-    all_items = LostFound.query.order_by(LostFound.id.desc()).all()
-    return render_template('lost_found.html', items=all_items)
+    # 5. Fetch all items (Newest first)
+    items = LostFound.query.order_by(LostFound.id.desc()).all()
+    return render_template('lost_found.html', items=items)
 
 
 @app.route('/logout')
@@ -392,45 +394,6 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 
-
-import os
-from datetime import datetime  # Crucial for the timestamp
-from flask import Flask, render_template, request, redirect, url_for, session
-from werkzeug.utils import secure_filename # Crucial for saving files
-# Ensure this path is absolute for your Windows desktop
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads')
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-@app.route('/lost-found', methods=['GET', 'POST'])
-def lost_found():
-    if request.method == 'POST':
-        file = request.files.get('item_image')
-        filename = None  # Default to None if no file is uploaded
-        
-        if file and file.filename != '':
-            # Secure and timestamp the filename
-            filename = secure_filename(file.filename)
-            filename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{filename}"
-            
-            # Save the file to your desktop folder
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            print(f"!!! SUCCESS: Saved {filename}")
-
-        # Create the database entry
-        new_item = LostFound(
-            item_name=request.form.get('item_name'),
-            description=request.form.get('description'),
-            location=request.form.get('location'),
-            status=request.form.get('status'),
-            image_path=filename,  # This saves the filename string to the DB
-            user_id=session.get('user_id')
-        )
-        db.session.add(new_item)
-        db.session.commit()
-        return redirect(url_for('lost_found'))
-
-    items = LostFound.query.all()
-    return render_template('lost_found.html', items=items)
 
 @app.route('/admin/add_worker', methods=['POST'])
 def add_worker():
