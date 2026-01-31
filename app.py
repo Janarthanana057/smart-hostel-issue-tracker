@@ -76,8 +76,32 @@ class LostFound(db.Model):
 
 # --- ROUTES ---
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST']) # ✅ Added methods
 def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        role_portal = request.form.get('role_portal') # Matches your HTML dropdown
+
+        # Map "Student Portal" to "Student" to match your DB insertion
+        db_role = 'Student' if 'Student' in role_portal else 'Worker' if 'Worker' in role_portal else 'Management'
+
+        user = User.query.filter_by(username=username, role=db_role).first()
+
+        if user and user.password == password:
+            session['user_id'] = user.id
+            session['role'] = user.role
+            
+            # Redirect to the dashboard
+            if user.role == 'Student':
+                return redirect(url_for('student_dashboard'))
+            elif user.role == 'Worker':
+                return redirect(url_for('worker_dashboard'))
+            else:
+                return redirect(url_for('admin_dashboard'))
+        
+        return "Invalid Credentials" # For now, simple error message
+    
     return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
