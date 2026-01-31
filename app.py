@@ -468,3 +468,6 @@ def worker_dashboard():
                            worker=worker, 
                            tasks=assigned_tasks,
                            workload=len(pending_tasks))
+
+if __name__ == "__main__":
+    app.run(debug=True)
