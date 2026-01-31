@@ -1,0 +1,88 @@
+/* 1. Use the same Oceanic Mixed Background as your Dashboard */
+body {
+    background: linear-gradient(-45deg, #74ebd5, #9face6, #e0f7fa, #99b2f5);
+    background-size: 400% 400%;
+    animation: gradientMove 8s ease-in-out infinite;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* 2. Glass Form Container */
+.report-container {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 40px;
+    border-radius: 25px;
+    width: 500px; /* Centered compact width */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+h2 { color: #1a3a5f; margin-bottom: 25px; text-align: center; }
+
+/* 3. Input Styling */
+.form-group { margin-bottom: 20px; display: flex; flex-direction: column; }
+
+label { font-weight: bold; color: #2c3e50; margin-bottom: 8px; }
+
+input, select, textarea {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(255, 255, 255, 0.6);
+    outline: none;
+    font-size: 1rem;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #99b2f5;
+    box-shadow: 0 0 8px rgba(153, 178, 245, 0.4);
+}
+
+/* 4. Professional Submit Button */
+.btn-submit {
+    background: #27ae60;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 15px;
+    width: 100%;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-submit:hover {
+    background: #219150;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+}
+
+/* Positioning the Back button at the very top-left */
+.back-link {
+    position: absolute; /* Pulls it out of the center box */
+    top: 30px;
+    left: 30px;
+    
+    /* Bold Red Color */
+    color: #01010c !important; 
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1.2rem;
+    
+    /* Professional Hover Effect */
+    transition: 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 100; /* Ensures it stays above the background animation */
+}
+
+.back-link:hover {
+    color: #130604 !important; /* Darker red on hover */
+    transform: translateX(-5px); /* Slight move to the left */
+}

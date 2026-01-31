@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <title>Smart Hostel Login</title>
+</head>
+<body class="split-screen">
+    <div class="left-side">
+        <h2>🏢 Smart Hostel</h2>
+        <p style="color: #95a5a6; margin-bottom: 20px;">Secure Login</p>
+        
+        <form action="/login" method="POST">
+            <label>Username</label>
+            <input type="text" name="username" placeholder="Enter Reg No" maxlength="15" required>
+            
+            <label>Password</label>
+            <input type="password" name="password" placeholder="••••••••" maxlength="15" required>
+
+            <label>Security Code</label>
+            <div class="captcha-container">
+                <span id="captcha-code" class="captcha-text"></span>
+                <input type="text" id="captcha-input" placeholder="Type code" maxlength="6" required>
+            </div>
+                        
+            <label>Login As</label>
+            <select name="role">
+                <option value="Student">Student Portal</option>
+                <option value="Worker">Worker Portal</option>
+                <option value="Management">Management Admin</option>
+            </select>
+            
+            <button type="submit" onclick="return validateCaptcha()">Login</button>
+        </form>
+    </div>
+
+    <div class="right-side">
+        <div class="slides-wrapper" id="imgSlider">
+            <img src="{{ url_for('static', filename='hoster1.jpg') }}" class="slide">
+            <img src="{{ url_for('static', filename='hoster2.jpg') }}" class="slide">
+            <img src="{{ url_for('static', filename='hoster3.jpg') }}" class="slide">
+            <img src="{{ url_for('static', filename='hoster4.jpg') }}" class="slide">
+        </div>
+        <button class="prev" onclick="plusSlides(-1)">&#10094;</button>
+        <button class="next" onclick="plusSlides(1)">&#10095;</button>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

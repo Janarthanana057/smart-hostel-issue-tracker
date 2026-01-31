@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/report.css') }}">
+    <title>Report Issue</title>
+</head>
+<body class="report-body"> 
+    <a href="/student_dashboard" class="back-link">⬅ Back</a>
+    <div class="report-container">
+        <h2>Report a New Hostel Issue</h2>
+        
+        <form action="/report" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" placeholder="e.g. Broken Fan in Room 302" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category</label> 
+                <select id="category" name="category" required>
+                    <option value="Plumbing">Plumbing</option>
+                    <option value="Electrical">Electrical</option>
+                    <option value="Cleanliness">Cleanliness</option>
+                    <option value="Internet">Internet</option>
+                    <option value="Furniture">Furniture</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="priority">Priority</label> 
+                <select id="priority" name="priority">
+                    <option value="Low">Low</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="High">High</option>
+                    <option value="Emergency">Emergency</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="4" placeholder="Describe the problem details..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="media">Media Upload (Optional)</label> 
+                <input type="file" id="media" name="item_image" accept="image/*" class="file-input">
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" name="is_public" id="is_public">
+                <label for="is_public">Make this a Public Issue</label> 
+            </div>
+
+            <button type="submit" class="btn-submit">Submit Report</button>
+        </form>
+    </div>
+</body>
+</html>

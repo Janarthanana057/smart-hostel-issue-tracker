@@ -1,0 +1,226 @@
+.split-screen {
+    display: flex;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    /* Adds a subtle spotlight effect in the center */
+    background: radial-gradient(circle at center, #1e2a4a 0%, #1a1a2e 100%);
+    gap: 40px;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Add this to give the login box a glowing edge */
+.left-side {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15); /* Slightly brighter border */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 
+                inset 0 0 10px rgba(255, 255, 255, 0.05); /* Inner glow */
+}
+.left-side input:focus {
+    box-shadow: 0 0 8px rgba(240, 165, 0, 0.4);
+    border-color: #f0a500;
+}
+
+.left-side h2 {
+    /* Slightly smaller font for the smaller box */
+    font-size: 1.6rem; 
+    margin-bottom: 20px;
+    color: #f0a500; /* Gold Accent */
+}
+
+/* Modern Input Styling - Made more compact */
+.left-side input, .left-side select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 12px; /* Reduced from 15px */
+    border-radius: 10px;
+    color: white;
+    margin-bottom: 15px; /* Reduced from 20px */
+    outline: none;
+    transition: 0.3s;
+    width: 100%; /* Ensures it fits the new width */
+    box-sizing: border-box;
+}
+
+.left-side input:focus {
+    border-color: #f0a500;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.left-side button {
+    background: #f0a500;
+    color: #1a1a2e;
+    padding: 12px; /* Reduced from 15px */
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 5px;
+}
+
+.left-side button:hover {
+    background: #ffc107; /* Brighter gold on hover */
+    transform: scale(1.05); /* Slightly grows when you point at it */
+    box-shadow: 0 5px 15px rgba(240, 165, 0, 0.4);
+    transition: all 0.3s ease;
+}
+
+/* Specifically target the dropdown options */
+.left-side select option {
+    background-color: #1a1a2e; /* Dark background so white text is visible */
+    color: white; /* Ensure text is white against the dark background */
+    padding: 10px;
+}
+
+/* Ensure the select box itself shows the selected text clearly */
+.left-side select {
+    color: white !important;
+    cursor: pointer;
+}
+
+/* Fix for the white background when clicking (Focus) */
+.left-side input:focus, 
+.left-side select:focus {
+    background: rgba(255, 255, 255, 0.15) !important; /* Keep it transparent */
+    border-color: #f0a500 !important; /* Keep the gold border */
+    color: white !important;
+    outline: none;
+}
+
+/* Fix for the white background during Chrome Autofill */
+.left-side input:-webkit-autofill,
+.left-side input:-webkit-autofill:hover, 
+.left-side input:-webkit-autofill:focus {
+    -webkit-text-fill-color: white !important;
+    -webkit-box-shadow: 0 0 0px 1000px #1a1a2e inset !important; /* Matches your dark theme */
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Right Side Image Frame */
+/* Container for the image box */
+.right-side {
+    width: 550px;
+    height: 480px;
+    position: relative;
+    overflow: hidden; /* Clips images to the curve */
+    border-radius: 25px; /* Matches the left-side curve */
+}
+
+.split-screen {
+    /* Slightly lighter navy for the background */
+    background: linear-gradient(135deg, #1e2a4a 0%, #1a1a2e 100%); 
+}
+
+.left-side {
+    /* Darker, more transparent box to create contrast */
+    background: rgba(15, 15, 35, 0.6); 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.slides-wrapper {
+    display: flex; /* THIS IS THE MOST IMPORTANT LINE */
+    width: 400%;   /* 4 images = 400% */
+    height: 100%;
+    transition: transform 0.8s ease-in-out; /* Makes it slide smoothly */
+}
+
+.slide {
+    width: 25%; /* Each image is 1/4th of the 400% wrapper */
+    height: 100%;
+    object-fit: cover;
+}
+/* This is the "strip" that holds all 4 images */
+.slides-wrapper {
+    display: flex; /* Keeps images in one row */
+    width: 400%;   /* 4 images = 400% width */
+    transition: transform 0.8s ease-in-out; /* Smooth slide motion */
+}
+
+.slide {
+    width: 25%;    /* Each image takes 1/4 of the wrapper */
+    object-fit: cover;
+}
+
+/* Arrow Styling */
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: #f0a500; /* Gold accent */
+    padding: 15px 18px;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    font-size: 20px;
+    z-index: 10;
+    transition: 0.3s;
+}
+
+.prev { left: 15px; }
+.next { right: 15px; }
+
+.prev:hover, .next:hover {
+    background: #f0a500;
+    color: #1a1a2e;
+}
+
+/* Captcha Styling */
+.captcha-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+/* Fixes the invisible Captcha issue */
+/* Fix for the empty-looking Captcha box */
+.captcha-text {
+    background: #f0a500; /* Your gold theme color */
+    color: #1a1a2e !important; /* Dark text so it is visible */
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    font-size: 1.2rem;
+    min-width: 100px; /* Gives the box a solid shape */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Maintain the glass-morphism look */
+.left-side {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 25px;
+    width: 320px;
+}
+/* Specifically target the Captcha input to make it smaller */
+#captcha-input {
+    width: 120px !important; /* Reduced width */
+    flex: none; /* Prevents it from stretching to fill the line */
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 0px; /* Aligns better with the yellow box */
+}
+
+/* Ensure the container keeps them on one line */
+.captcha-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Aligns them to the left */
+    gap: 15px; /* Adds a professional gap */
+    margin-bottom: 20px;
+}
+
+/* Prevents white background on focus */
+.left-side input {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 10px;
+}

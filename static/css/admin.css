@@ -1,0 +1,38 @@
+/* Container to hold all admin options in one row */
+.admin-actions-container {
+    display: flex;
+    flex-wrap: wrap; /* Allows sections to drop to next line if screen is small */
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+/* Individual cards (Stats, Circular, Hiring) */
+.admin-card {
+    flex: 1; /* Makes them grow equally */
+    min-width: 300px; /* Prevents them from getting too thin */
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Base style for all badges */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+
+/* Green for Solved */
+.status-badge.solved {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* Yellow for Pending/Reported */
+.status-badge.reported, .status-badge.assigned {
+    background-color: #fff3cd;
+    color: #856404;
+}

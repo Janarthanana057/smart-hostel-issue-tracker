@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fount.css') }}">
+    <title>Hostel Lost & Found</title>
+</head>
+<body>
+    
+
+    <div class="main-layout"> 
+        
+        <div class="left-side"> 
+            <div class="container"><a href="/student_dashboard" class="back-link">⬅ Back</a>
+                <h2>🔍 Hostel Lost & Found</h2>
+                <p style="text-align: center; color: #555; margin-bottom: 20px;">
+                    Report and claim items found within hostel.
+                </p>
+                
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="item_name">Item Name</label>
+                        <input type="text" id="item_name" name="item_name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Report Type</label>
+                        <select id="status" name="status" required>
+                            <option value="Found">I Found Something</option>
+                            <option value="Lost">I Lost Something</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Details</label>
+                        <textarea id="description" name="description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="item_image">Item Photo</label>
+                        <input type="file" id="item_image" name="item_image" accept="image/*">
+                    </div>
+
+                    <button type="submit" class="btn-submit">Post to Board</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="right-side">
+            <div class="items-grid">
+                {% for item in items %}
+                <div class="card {{ 'card-found' if item.status == 'Found' else 'card-lost' }}">
+                    
+                    {% if item.image_path %}
+                        <img src="{{ url_for('static', filename='uploads/' + item.image_path) }}?v={{ range(1, 999) | random }}" 
+                            class="item-preview" 
+                            alt="{{ item.item_name }}">
+                    {% else %}
+                        <div class="no-image" style="height: 180px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; border-radius: 10px; color: #94a3b8;">
+                            🚫 No Image Provided
+                        </div>
+                    {% endif %}
+                    
+                    <div class="card-content" style="padding-top: 15px;">
+                        <h3 style="margin-bottom: 10px;">
+                            <span class="status-badge {{ item.status.lower() if item.status else '' }}" 
+                                style="padding: 4px 8px; border-radius: 6px; font-size: 0.7em; text-transform: uppercase;">
+                                {{ item.status }}
+                            </span> 
+                            {{ item.item_name }}
+                        </h3>
+
+                        <p style="font-size: 0.9em; margin-bottom: 5px;"><strong>📍 Location:</strong> {{ item.location }}</p>
+                        <p class="item-description" style="font-size: 0.85em; color: #64748b; margin-bottom: 15px;">
+                            <strong>📝 Details:</strong> {{ item.description }}
+                        </p>
+                        
+                        {% if item.status == 'Found' %}
+                            <button class="btn-claim" style="width: 100%; background: #10b981; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                                Claim This Item
+                            </button>
+                        {% else %}
+                            <button class="btn-claim" style="width: 100%; background: #3b82f6; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                                I Found This!
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+</body>
+</html>

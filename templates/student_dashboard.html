@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Student Dashboard</title>
+</head>
+<body class="dashboard-body"> 
+    <div class="navbar animated-nav">
+        <div class="nav-left">
+            <span class="logo">🏢 Smart Hostel</span>
+            <span class="welcome-text">Welcome, {{ session['username'] }}</span>
+        </div>
+        
+        <div class="nav-right">
+            <a href="/report" class="btn-nav">➕ New Issue</a>
+            <a href="/lost-found" class="btn-nav">🔍 Lost & Found</a>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="dashboard-flex">
+            
+            <div class="sidebar-left">
+                <div class="card card-personal">
+                    <h3>👥 My Roommates (Room {{ session['room_number'] }})</h3>
+                    <ul class="roommate-list">
+                        {% for mate in roommates %}
+                            <li>
+                                {{ mate.username }} 
+                                {% if mate.id == session['user_id'] %} <span class="me-tag">(Me)</span> {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="card-circular animated-circular">
+                    <h3 style="color: #1a3a5f; margin-bottom: 20px;">📜 Latest Management Circulars</h3>
+                    
+                    {% for c in circulars %}
+                    <div class="circular-item" style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px;">
+                        <p class="circular-text" style="font-weight: bold; color: #2c3e50; margin-bottom: 5px;">
+                            <span class="new-tag" style="background: #e74c3c; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7em; margin-right: 8px;">NEW</span> 
+                            {{ c.title }} 
+                        </p>
+                        <p style="color: #555; font-size: 0.9em; margin: 0;">{{ c.content }}</p>
+                        <small style="color: #999; display: block; margin-top: 5px;">
+                            Posted on: {{ c.date_posted.strftime('%d %b, %Y') if c.date_posted else 'Recently' }}
+                        </small>
+                    </div>
+                    {% else %}
+                    <p style="color: #777; font-style: italic;">No announcements currently available.</p>
+                    {% endfor %}
+
+                    <button class="btn-submit" style="background: #f0a500; color: #1a1a2e; margin-top: 5px; width: 100%; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                        View All Archives
+                    </button>
+                </div>
+            </div> 
+            <div class="content-right">
+                <h2 style="color: #1a3a5f;">🔒 My Reported Issues</h2>
+                <div class="issues-stack">
+                    {% for issue in my_issues %}
+                    <div class="card card-personal">
+                        <div style="display: flex; justify-content: space-between;">
+                            <h3>{{ issue.title }}</h3>
+                            {% if issue.is_public %}
+                                <span style="color: #3498db; font-size: 0.8em;">📢 Publicly Shared</span>
+                            {% endif %}
+                        </div>
+                        <p class="category-tag">{{ issue.category }}</p>
+
+                        {% if issue.image_path %}
+                        <div style="margin: 10px 0;">
+                            <img src="{{ url_for('static', filename='uploads/' + issue.image_path) }}" 
+                                style="width: 100px; height: 60px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd;">
+                        </div>
+                        {% endif %}
+
+                        <div class="status-container">
+                            <ul class="progressbar">
+                                <li class="{{ 'active step-1' if issue.status in ['Reported', 'Assigned', 'In Progress', 'Solved'] }}">Reported</li>
+                                <li class="{{ 'active step-2' if issue.status in ['Assigned', 'In Progress', 'Solved'] }}">Assigned</li>
+                                <li class="{{ 'active step-3' if issue.status in ['In Progress', 'Solved'] }}">In Progress</li>
+                                <li class="{{ 'active step-4' if issue.status == 'Solved' }}">Solved</li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <h2 style="color: #1a3a5f; margin-top: 40px;">🌍 Public Campus Issues</h2>
+                <div class="issues-stack">
+                    {% for issue in public_issues %}
+                    <div class="card card-public" style="background: #f8fbff; border-left: 5px solid #3498db;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3 style="margin: 0;">{{ issue.title }}</h3>
+                                <small style="color: #7f8c8d;">📍 Room: {{ issue.room_number }}</small>
+                            </div>
+                            <span class="status-badge" style="font-size: 0.8em; background: #e2e8f0; padding: 4px 8px; border-radius: 10px;">
+                                {{ issue.status }}
+                            </span>
+                        </div>
+
+                        {% if issue.image_path %}
+                        <div style="margin-top: 15px;">
+                            <img src="{{ url_for('static', filename='uploads/' + issue.image_path) }}" 
+                                style="width: 100%; height: 150px; object-fit: cover; border-radius: 10px;">
+                        </div>
+                        {% endif %}
+
+                        <div class="reactions" style="margin-top: 15px;">
+                            <button class="reaction-btn" style="cursor: pointer; background: white; border: 1px solid #3498db; color: #3498db; padding: 5px 10px; border-radius: 5px;">👍 I have this issue too</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

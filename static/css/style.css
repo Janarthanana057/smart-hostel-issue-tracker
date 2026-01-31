@@ -1,0 +1,284 @@
+/* --- Optimized Progress Bar (Private Report) --- */
+.status-container {
+    margin: 30px 0; /* More vertical space for clarity */
+}
+
+.progressbar {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
+
+.progressbar li {
+    font-size: 11px; /* Slightly larger for readability */
+    color: #2c3e50; /* Deep navy text for contrast */
+    text-align: center;
+    width: 25%;
+    position: relative;
+    z-index: 2;
+}
+
+/* --- Status Circles --- */
+/* --- Base Status Bar Structure --- */
+.progressbar {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    padding: 0;
+    margin: 30px 0;
+    position: relative;
+}
+
+.progressbar li {
+    font-size: 11px;
+    color: #475569; /* Professional slate gray */
+    text-align: center;
+    width: 25%;
+    position: relative;
+    z-index: 2;
+}
+
+/* Dots Styling */
+.progressbar li::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    background: white;
+    border: 2px solid #bdc3c7;
+    border-radius: 50%;
+    display: block;
+    margin: 0 auto 8px auto;
+}
+
+/* Connecting Line */
+.progressbar li::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background: #bdc3c7;
+    top: 9px;
+    left: -50%;
+    z-index: -1;
+}
+
+.progressbar li:first-child::after { content: none; }
+
+/* --- 4-Color Active Logic --- */
+
+/* Stage 1: Reported (RED) */
+.active.step-1 { color: #e74c3c !important; font-weight: bold; }
+.active.step-1::before { background: #e74c3c; border-color: #e74c3c; }
+
+/* Stage 2: Assigned (YELLOW/AMBER) */
+.active.step-2 { color: #f39c12 !important; font-weight: bold; }
+.active.step-2::before { background: #f1c40f; border-color: #f1c40f; }
+.active.step-2::after { background: #f1c40f !important; }
+
+/* Stage 3: In Progress (LIGHT GREEN) */
+.active.step-3 { color: #2ecc71 !important; font-weight: bold; }
+.active.step-3::before { background: #62cc62; border-color: #62cc62; }
+.active.step-3::after { background: #62cc62 !important; }
+
+/* Stage 4: Solved (FULL GREEN) */
+.active.step-4 { color: #059669 !important; font-weight: bold; }
+.active.step-4::before { 
+    background: #10b981; 
+    border-color: #10b981; 
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); /* Success Glow */
+}
+.active.step-4::after { background: #10b981 !important; }
+
+/* the stutent  dashboard */
+/* Deep Midnight Background for the whole page */
+/* 1. Global Light Oceanic Theme */
+body {
+    /* Stronger Oceanic Mix: Deep Sky Blue to Mint */
+    background: linear-gradient(-45deg, #74ebd5, #9face6, #d67bda, #99b2f5);
+    background-size: 400% 400%;
+    animation: gradientMove 8s ease-in-out infinite; /* Faster movement to see it work */
+    color: #1e293b; 
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh; /* Ensures background covers the whole page */
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+/* 2. Layout Proportions (30/70 Split) */
+.container {
+    max-width: 100%;
+    margin: 0;
+    padding-left: 10px; /* Pulls content to far left */
+    display: flex;
+}
+
+.dashboard-flex {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+
+/* Left Sidebar: Fixed 30% */
+.sidebar-left {
+    flex: 0 0 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertical centering */
+    align-items: center;     /* Horizontal centering */
+    gap: 25px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+}
+
+/* Right Content: Expanded to 68% for horizontal stretch */
+.content-right {
+    flex: 0 0 68%; /* Increased from 60% to fill the screen */
+    padding: 20px 20px 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* 3. Improved Card Styles */
+.card, .card-circular {
+    background: rgb(194, 227, 243);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 25px;
+    width: 90%; /* Horizontally increased */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.card:hover { transform: translateY(-5px); } /* Adds "life" to the UI */
+
+/* Style for the Circular box with a "Living" Gold Border */
+/* Glass card for the circular */
+.card-circular {
+    background: rgba(255, 255, 255, 0.4) !important;
+    backdrop-filter: blur(12px);
+    border-left: 6px solid #f0a500 !important; /* Gold priority */
+    padding: 20px;
+    border-radius: 20px;
+    width: 90%; /* Fits the 30% sidebar */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for uploaded images */
+.circular-image-container {
+    margin-top: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.circular-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.circular-img:hover {
+    transform: scale(1.05); /* Zoom effect when student looks at it */
+}
+
+/* The Pulse Effect for New Updates */
+@keyframes borderPulse {
+    0% { border-left-color: #f0a500; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+    50% { border-left-color: #ffd700; box-shadow: 0 4px 25px rgba(240, 165, 0, 0.3); }
+    100% { border-left-color: #f0a500; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+}
+
+/* Targeting the Roommates card specifically */
+.sidebar-left .card-personal {
+    padding: 15px;          /* Reduced from 25px to make it smaller */
+    margin-bottom: 10px;    /* Less space between this and the circular box below */
+    max-width: 90%;         /* Keeps it tight within the 30% sidebar */
+}
+
+/* Make the list items closer together */
+.roommate-list {
+    margin: 5px 0;
+    padding-left: 20px;
+    font-size: 0.85em;      /* Slightly smaller text to save vertical space */
+}
+
+.roommate-list li {
+    margin-bottom: 5px;     /* Tightens the gap between names */
+}
+
+/* Adding a "New" badge animation */
+.new-tag {
+    background: #e74c3c;
+    color: white;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-right: 8px;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+
+/* 4. Navbar with Logout on the Far Right */
+.navbar {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 15px 40px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    animation: slideDownFade 0.8s ease-out forwards;
+}
+
+.logout-link {
+    color: #e74c3c;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 8px 15px;
+}
+
+/* 5. Progress Bar Fix (Matching Active Colors) */
+.progressbar li.active::after {
+    background: #2ecc71; /* Matches the emerald dots for a clean line */
+}
+
+@keyframes slideDownFade {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* task gap */
+/* Container for the cards */
+.issues-stack {
+    display: flex;
+    flex-direction: column; /* Stacks them vertically */
+    gap: 25px;              /* ✅ This creates the 25px gap between each card */
+    margin-top: 15px;       /* Gap between the "My Private Issues" title and the first card */
+}
+
+/* Individual Card Styling */
+.card-personal, .card-public {
+    margin-bottom: 10px;    /* Extra safety gap for older browsers */
+    padding: 30px;          /* Increases internal space inside the card */
+    transition: transform 0.2s ease;
+}
+
+/* Hover effect to highlight the gap */
+.card-personal:hover {
+    transform: scale(1.02); /* Slightly enlarges the card to show it is separate from others */
+}
