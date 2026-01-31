@@ -390,31 +390,29 @@ def setup_hostel_data():
     db.session.commit()
 
 
-
-# 2. Call it at the very bottom of your file
-if __name__ == '__main__':
-    with app.app_context():
-        # 1. Create the database tables
-        db.create_all()
-        
-        # 2. Generate the 135 student accounts (3 floors, 15 rooms, 3 members)
-        setup_hostel_data()
-        
-        # 3. Ensure an Admin (Management) account exists
-        admin_user = User.query.filter_by(username='admin').first()
-        if not admin_user:
-            admin = User(
-                username='admin', 
-                password='123', 
-                role='Management'
-            )
-            db.session.add(admin)
-            db.session.commit()
-            print("Admin account created: username='admin', password='123'")
-
-    app.run(debug=True)
-
-
-
 if __name__ == "__main__":
+    with app.app_context():
+        # 1. Create all tables on Render
+        db.create_all() 
+        
+        # 2. Check for one student to avoid duplicate insertion
+        if not User.query.filter_by(username='2026HOSTEL1011').first():
+            # Create Room 101 Students
+            s1 = User(username='2026HOSTEL1011', password='password123', role='Student', room_number='101')
+            s2 = User(username='2026HOSTEL1012', password='password123', role='Student', room_number='101')
+            s3 = User(username='2026HOSTEL1013', password='password123', role='Student', room_number='101')
+            
+            # Create Workers with specialties
+            w1 = User(username='WORKER_ELEC', password='workerpassword', role='Worker', specialty='Electrical')
+            w2 = User(username='WORKER_PLUM', password='workerpassword', role='Worker', specialty='Plumbing')
+            
+            # Create Admin for MIT Management
+            admin = User(username='ADMIN_MIT', password='adminpassword', role='Management')
+            
+            # Add and Commit everything
+            db.session.add_all([s1, s2, s3, w1, w2, admin])
+            db.session.commit()
+            print("✅ Success: All Demo Roles (Students, Workers, Admin) Inserted!")
+
+    # 3. Start the app (This MUST be at the very bottom)
     app.run(debug=True)
