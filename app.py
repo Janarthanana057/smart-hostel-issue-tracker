@@ -413,23 +413,23 @@ def setup_hostel_data():
                     db.session.add(new_student)
     db.session.commit()
 
-
-if __name__ == "__main__":
-    with app.app_context():
-        # 1. This creates the missing tables immediately on Render
-        db.create_all() 
+# --- MOVE THIS OUTSIDE THE MAIN BLOCK ---
+with app.app_context():
+    # This creates the tables for the production server
+    db.create_all() 
+    
+    # Check and add demo users
+    if not User.query.filter_by(username='2026HOSTEL1011').first():
+        s1 = User(username='2026HOSTEL1011', password='password123', role='Student', room_number='101')
+        s2 = User(username='2026HOSTEL1012', password='password123', role='Student', room_number='101')
+        s3 = User(username='2026HOSTEL1013', password='password123', role='Student', room_number='101')
+        w1 = User(username='WORKER_ELEC', password='workerpassword', role='Worker', specialty='Electrical')
+        admin = User(username='ADMIN_MIT', password='adminpassword', role='Management')
         
-        # 2. Add your demo users (Student, Worker, Admin)
-        if not User.query.filter_by(username='2026HOSTEL1011').first():
-            s1 = User(username='2026HOSTEL1011', password='password123', role='Student', room_number='101')
-            s2 = User(username='2026HOSTEL1012', password='password123', role='Student', room_number='101')
-            s3 = User(username='2026HOSTEL1013', password='password123', role='Student', room_number='101')
-            w1 = User(username='WORKER_ELEC', password='workerpassword', role='Worker', specialty='Electrical')
-            admin = User(username='ADMIN_MIT', password='adminpassword', role='Management')
-            
-            db.session.add_all([s1, s2, s3, w1, admin])
-            db.session.commit()
-            print("✅ Database successfully initialized on Render!")
+        db.session.add_all([s1, s2, s3, w1, admin])
+        db.session.commit()
+        print("✅ Database successfully initialized on Render!")
 
-    # 3. Start the server
+# Keep only the app.run inside the main block
+if __name__ == "__main__":
     app.run(debug=True)
