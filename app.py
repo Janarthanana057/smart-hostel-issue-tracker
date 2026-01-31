@@ -310,26 +310,30 @@ def lost_found():
 def logout():
     session.clear()
     return redirect(url_for('login'))
-
 @app.route('/admin/add_worker', methods=['POST'])
 def add_worker():
+    # 1. Security Check
     if session.get('role') != 'Management':
         return redirect(url_for('login'))
     
-    # Get details from the management form
     name = request.form.get('worker_name')
     pwd = request.form.get('password')
-    spec = request.form.get('specialty') # e.g., 'Electrical', 'Plumbing'
+    spec = request.form.get('specialty')
     
-    # Check if worker already exists
+    # 2. Validation
+    if not name or not pwd or not spec:
+        flash("All fields are required!")
+        return redirect(url_for('admin_dashboard'))
+
+    # 3. Duplicate Check
     if User.query.filter_by(username=name).first():
-        flash("Username already exists!")
+        flash(f"Error: Username '{name}' is already taken!")
     else:
-        # Create the new worker
+        # 4. Create and Commit
         new_worker = User(username=name, password=pwd, role='Worker', specialty=spec)
         db.session.add(new_worker)
         db.session.commit()
-        flash(f"Worker {name} added successfully for {spec}!")
+        flash(f"✅ Worker {name} added successfully for {spec}!")
         
     return redirect(url_for('admin_dashboard'))
 
@@ -395,22 +399,6 @@ if __name__ == '__main__':
 
     app.run(debug=True)
 
-
-
-@app.route('/admin/add_worker', methods=['POST'])
-def add_worker():
-    # These names MUST match the 'name' attributes in your HTML form
-    name = request.form.get('worker_name') 
-    pwd = request.form.get('password')
-    spec = request.form.get('specialty')
-    
-    if name and pwd and spec:
-        new_worker = User(username=name, password=pwd, role='worker', specialty=spec)
-        db.session.add(new_worker)
-        db.session.commit()
-        print(f"✅ Success: Hired {name} for {spec}")
-    
-    return redirect(url_for('admin_dashboard'))
 
 
 
