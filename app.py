@@ -392,27 +392,20 @@ def setup_hostel_data():
 
 if __name__ == "__main__":
     with app.app_context():
-        # 1. Create all tables on Render
+        # 1. This creates the missing tables immediately on Render
         db.create_all() 
         
-        # 2. Check for one student to avoid duplicate insertion
+        # 2. Add your demo users (Student, Worker, Admin)
         if not User.query.filter_by(username='2026HOSTEL1011').first():
-            # Create Room 101 Students
             s1 = User(username='2026HOSTEL1011', password='password123', role='Student', room_number='101')
             s2 = User(username='2026HOSTEL1012', password='password123', role='Student', room_number='101')
             s3 = User(username='2026HOSTEL1013', password='password123', role='Student', room_number='101')
-            
-            # Create Workers with specialties
             w1 = User(username='WORKER_ELEC', password='workerpassword', role='Worker', specialty='Electrical')
-            w2 = User(username='WORKER_PLUM', password='workerpassword', role='Worker', specialty='Plumbing')
-            
-            # Create Admin for MIT Management
             admin = User(username='ADMIN_MIT', password='adminpassword', role='Management')
             
-            # Add and Commit everything
-            db.session.add_all([s1, s2, s3, w1, w2, admin])
+            db.session.add_all([s1, s2, s3, w1, admin])
             db.session.commit()
-            print("✅ Success: All Demo Roles (Students, Workers, Admin) Inserted!")
+            print("✅ Database successfully initialized on Render!")
 
-    # 3. Start the app (This MUST be at the very bottom)
+    # 3. Start the server
     app.run(debug=True)
