@@ -213,8 +213,22 @@ def report_issue():
 def worker_dashboard():
     if 'user_id' not in session or session.get('role') != 'Worker':
         return redirect(url_for('login'))
-    tasks = Issue.query.filter_by(worker_id=session['user_id']).all()
-    return render_template('worker_dashboard.html', tasks=tasks)
+    
+    # ✅ FIX 1: Use db.session.get instead of .query.get to avoid LegacyAPIWarning
+    worker = db.session.get(User, session['user_id'])
+    
+    # 2. Get issues assigned to THIS worker
+    assigned_tasks = Issue.query.filter_by(worker_id=session['user_id']).all()
+    
+    # 3. Calculate workload (only pending tasks)
+    pending_tasks = [t for t in assigned_tasks if t.status != 'Solved']
+    
+    # ✅ FIX 2: Ensure the variables match what you use in worker_dashboard.html
+    return render_template('worker_dashboard.html', 
+                           worker=worker, 
+                           tasks=assigned_tasks,
+                           workload=len(pending_tasks))
+
 
 
 @app.route('/update_status/<int:issue_id>', methods=['POST'])
@@ -400,27 +414,6 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 
-
-
-@app.route('/worker_dashboard')
-def worker_dashboard():
-    if 'user_id' not in session or session.get('role') != 'Worker':
-        return redirect(url_for('login'))
-    
-    # ✅ FIX 1: Use db.session.get instead of .query.get to avoid LegacyAPIWarning
-    worker = db.session.get(User, session['user_id'])
-    
-    # 2. Get issues assigned to THIS worker
-    assigned_tasks = Issue.query.filter_by(worker_id=session['user_id']).all()
-    
-    # 3. Calculate workload (only pending tasks)
-    pending_tasks = [t for t in assigned_tasks if t.status != 'Solved']
-    
-    # ✅ FIX 2: Ensure the variables match what you use in worker_dashboard.html
-    return render_template('worker_dashboard.html', 
-                           worker=worker, 
-                           tasks=assigned_tasks,
-                           workload=len(pending_tasks))
 
 if __name__ == "__main__":
     app.run(debug=True)
