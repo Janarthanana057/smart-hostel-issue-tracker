@@ -332,6 +332,8 @@ def add_worker():
         flash(f"Worker {name} added successfully for {spec}!")
         
     return redirect(url_for('admin_dashboard'))
+
+
 @app.route('/solve_issue/<int:issue_id>', methods=['POST'])
 def solve_issue(issue_id):
     if 'user_id' not in session:
